@@ -51,6 +51,8 @@
 
 			$test_chosen = explode('|', $_POST['select_tests']);
 			WPUT::runTests($test_chosen[0], $test_chosen[1]);
+		} else {
+			echo 'Select the test(s) you\'d like to perform from the drop-down menu above';
 		}
 		
 		echo '</pre>';
