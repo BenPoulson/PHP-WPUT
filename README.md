@@ -1,6 +1,4 @@
 #Wordpress Unit Testing (WPUT)
-===================
-
 
 **WPUT** is a simple way of adding Unit Tests into [WordPress](http://wordpress.org "WordPress"). Just install the plugin, add in your tests, then navigate to the WP-UT tab within the admin menu.
 
