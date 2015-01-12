@@ -18,8 +18,6 @@
 */
 
 	function wput_admin_page() {
-		 // Now display the settings editing screen
-
 		echo '<div class="wrap">';
 		echo '<form method="post" action="">';
 		echo '<h2>' . __( 'WordPress Unit Testing', 'WP-UT' ) . '</h2>';
@@ -48,9 +46,8 @@
 		echo '<pre style="background: #000; min-height: 400px; border: 1px #333 solid;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; scrolling: auto; color: #ccc; display: block; padding: 5px;
 ">';
 		if(isset($_POST['select_tests'])) {
-
 			$test_chosen = explode('|', $_POST['select_tests']);
-			WPUT::runTests($test_chosen[0], $test_chosen[1]);
+			WPUT::run($test_chosen[0], $test_chosen[1]);
 		} else {
 			echo 'Select the test(s) you\'d like to perform from the drop-down menu above';
 		}

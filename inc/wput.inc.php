@@ -16,13 +16,13 @@
 	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-	
+
 	class WPUT {
 
 		static $running;
 		static $tests;
 
-		public static function construct() {
+		public static function initialise() {
 			Self::$running = true;
 			Self::$tests = array();
 		}
@@ -35,7 +35,52 @@
 			Self::$tests[$namespace][$label] = $new; 
 		}
 
-		public static function runTests($namespace_filter = '', $label_filter = '') {
+		public static function assertTrue($boolean, $string = '') {
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function assertFalse($boolean, $string = '') {
+			return array('result' => !$boolean, 'text' => $string);
+		}
+
+		public static function assertNull($object, $string = ''){
+			$boolean = ($object == null);
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function assertNotNull($object, $string = ''){
+			$boolean = ($object != null);
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function assertSame($object1, $object2, $string = ''){
+			$boolean = ($object1 === $object2);
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function assertNotSame($object1, $object2, $string = ''){
+			$boolean = ($object1 !== $object2);
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function assertEquals($object1, $object2, $string = ''){
+			$boolean = ($object1 == $object2);
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function assertNotEquals($object1, $object2, $string = ''){
+			$boolean = ($object1 != $object2);
+			return array('result' => $boolean, 'text' => $string);
+		}
+
+		public static function run($namespace_filter = '', $label_filter = '') {
+
+			$total = 0;
+			$good = 0;
+			$bad = 0;
+
+			Self::log('?', 'lightblue', 'WP-UT', 'Start', date('h:i:s d/m/Y'));
+			$time = time();
 
 			foreach(Self::$tests as $namespace => $namespace_tests) {
 
@@ -52,22 +97,24 @@
 					if(Self::$running) {
 
 						try {
-							$result = $test->run();
 
-							if($result === true) {
-								Self::log('+', 'limegreen', $namespace, $label);
+							$attempt = $test->run();
+
+							if($attempt['result'] === true) {
+								Self::log('+', 'limegreen', $namespace, $label, $attempt['text']);
+								$good++;
 							}
-							elseif($result === false){
-								Self::log('-', 'red', $namespace, $label);
+							elseif($attempt['result'] === false){
+								Self::log('-', 'red', $namespace, $label, $attempt['text']);
+								$bad++;
 								if(!$test->continue)
 									Self::endTests();
 							}
-							elseif(is_string($result)){
-								Self::log('?', 'lightblue', $namespace, $label . ' - ' . $result);
-							}
+
+							$total++;
 
 						} catch(Exception $e) {
-							print_r($e);
+							Self::log('-', 'red', $namespace, $label, $e);
 							if(!$test->continue)
 								Self::endTests();
 						}
@@ -77,11 +124,17 @@
 				}
 
 			}
+
+			Self::log('?', 'lightblue', 'WP-UT', 'Finish', $good . '/' . $total . ' tests passed in ' . (time() - $time) . ' seconds');
+			
 				
 		}
 
-		private static function log($icon, $color, $namespace, $label){
-			echo '[' . $namespace .'][<span style="color:' . $color . '">' . $icon . '</span>] ' . $label . PHP_EOL;
+		private static function log($icon, $color, $namespace, $label, $comment){
+			echo '[' . $namespace .'][<span style="color:' . $color . '">' . $icon . '</span>] <span style="color:#999">' . $label;
+			if($comment)
+				echo ' - ' . $comment;
+			echo '</span>' . PHP_EOL;
 		}
 
 		private static function endTests(){

@@ -37,8 +37,7 @@ Author URI: https://benpoulson.me
 	add_action('init', 'wput_initialise', 0);
 	add_action('admin_init', 'wput_initialise', 0);
 	function wput_initialise() {
-		WPUT::construct();
-		
+		WPUT::initialise();
 	}
 
 	add_action('init', 'example_tests');
@@ -47,27 +46,38 @@ Author URI: https://benpoulson.me
 
 		/* Check using WP's version checker, to see if we're up to date */
 		WPUT::test('CoreTests', 'WordPress up-to-date', function(){
-			return file_get_contents('http://api.wordpress.org/core/version-check/1.0/?version=' . get_bloginfo('version')) == 'latest';
+			$blog_version = get_bloginfo('version');
+			$response = file_get_contents('http://api.wordpress.org/core/version-check/1.0/?version=' . $blog_version);
+			return WPUT::assertTrue($response == 'latest');
+		});
+
+		/* Do any of our plugins need updating? */
+		WPUT::test('CoreTests', 'Check Plugin Updates', function(){
+			$plugin_status = get_site_transient('update_plugins');
+			$update_count = count($plugin_status->response);
+			return WPUT::assertFalse($update_count);
+		});
+
+		/* Do any of our themes need updating? */
+		WPUT::test('CoreTests', 'Check Theme Updates', function(){
+			$theme_status = get_site_transient('update_themes');
+			$update_count = count($theme_status->response);
+			return WPUT::assertFalse($update_count);
 		});
 
 		/* Is the uploads folder writable? */
 		WPUT::test('CoreTests', 'Upload Folder Writable', function(){
-			return is_writable(WP_CONTENT_DIR);
+			return WPUT::assertTrue(is_writable(WP_CONTENT_DIR));
 		});
 
 		/* Check to see if 10 is greater than 5 */
-		WPUT::test('ExamplePlugin', 'Simple Test 1', function(){
-			return 10 > 5;
+		WPUT::test('ExamplePlugin', 'Simple Test 1 - (10 < 5) == false', function(){
+			return WPUT::assertFalse(10 < 5);
 		});
 
 		/* Check to see if 1 == 2 */
-		WPUT::test('ExamplePlugin', 'Simple Test 2', function(){
-			return 1 == 2;
-		});
-
-		/* Pass back a string instead of a boolean */
-		WPUT::test('ExamplePlugin', 'Simple Test 3', function(){
-			return "Extra string to pass back";
+		WPUT::test('ExamplePlugin', 'Simple Test 2 - (1 == 2) == false', function(){
+			return WPUT::assertFalse(1 == 2);
 		});
 
 	}
