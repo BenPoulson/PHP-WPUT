@@ -10,6 +10,7 @@ Code Examples
 
 Hook into the `init` through any method you choose, and start adding tests!
 
+```php
     add_action('init', 'example_tests');
 	add_action('admin_init', 'example_tests');
 	function example_tests() {
@@ -59,3 +60,4 @@ Hook into the `init` through any method you choose, and start adding tests!
 			return WPUT::assertFalse(1 == 2);
 		});
 	}
+```
