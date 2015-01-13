@@ -45,38 +45,45 @@ Author URI: https://benpoulson.me
 	function example_tests() {
 
 		/* Check using WP's version checker, to see if we're up to date */
-		WPUT::test('CoreTests', 'WordPress up-to-date', function(){
+		WPUT::test('Core', 'Check WordPress Updates', function(){
 			$blog_version = get_bloginfo('version');
 			$response = file_get_contents('http://api.wordpress.org/core/version-check/1.0/?version=' . $blog_version);
 			return WPUT::assertTrue($response == 'latest');
 		});
 
 		/* Do any of our plugins need updating? */
-		WPUT::test('CoreTests', 'Check Plugin Updates', function(){
+		WPUT::test('Core', 'Check Plugin Updates', function(){
 			$plugin_status = get_site_transient('update_plugins');
 			$update_count = count($plugin_status->response);
-			return WPUT::assertFalse($update_count);
+			return WPUT::assertFalse($update_count, $update_count . ' plugin/s to update');
 		});
 
 		/* Do any of our themes need updating? */
-		WPUT::test('CoreTests', 'Check Theme Updates', function(){
+		WPUT::test('Core', 'Check Theme Updates', function(){
 			$theme_status = get_site_transient('update_themes');
 			$update_count = count($theme_status->response);
-			return WPUT::assertFalse($update_count);
+			return WPUT::assertFalse($update_count, $update_count . ' theme/s to update');
 		});
 
 		/* Is the uploads folder writable? */
-		WPUT::test('CoreTests', 'Upload Folder Writable', function(){
+		WPUT::test('Core', 'Upload Folder Writable', function(){
 			return WPUT::assertTrue(is_writable(WP_CONTENT_DIR));
 		});
 
+		/* Check to see if search engines are encouraged or discouraged */
+		WPUT::test('Core', 'Website Public', function(){
+			$search = (bool)get_option('blog_public');
+			$search_term = ($search ? 'Encouraged' : 'Discouraged');
+			return WPUT::assertTrue($search, 'Searching is ' . $search_term);
+		});
+
 		/* Check to see if 10 is greater than 5 */
-		WPUT::test('ExamplePlugin', 'Simple Test 1 - (10 < 5) == false', function(){
+		WPUT::test('Example', 'Simple Test 1 - (10 < 5) == false', function(){
 			return WPUT::assertFalse(10 < 5);
 		});
 
 		/* Check to see if 1 == 2 */
-		WPUT::test('ExamplePlugin', 'Simple Test 2 - (1 == 2) == false', function(){
+		WPUT::test('Example', 'Simple Test 2 - (1 == 2) == false', function(){
 			return WPUT::assertFalse(1 == 2);
 		});
 

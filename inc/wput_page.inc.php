@@ -29,10 +29,10 @@
 			foreach(WPUT::$tests as $namespace => $namespace_tests) {
 
 				echo '<optgroup label="' . $namespace . '">';
-				echo '<option value="' . $namespace . '" style="margin-left:23px;">All Group Tests</option>';
+				echo '<option value="' . $namespace . '" style="margin-left:23px;">All ' . $namespace . ' Tests</option>';
 
 				foreach($namespace_tests as $label => $test) {
-					echo '<option value="' . $namespace . '|' . $label . '" style="margin-left:23px;">' . $label . '</option>';
+					echo '<option value="' . $namespace . '|' . $label . '" style="margin-left:23px;"> - ' . $label . '</option>';
 				}
 
 				echo '</optgroup>';
@@ -40,7 +40,7 @@
 			}
 
 		echo '</select>';
-		echo '<input type="submit" class="button">';
+		echo '<input type="submit" value="Run" class="button">';
 		echo '</form>';
 
 		echo '<pre style="background: #000; min-height: 400px; border: 1px #333 solid;-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; scrolling: auto; color: #ccc; display: block; padding: 5px;
