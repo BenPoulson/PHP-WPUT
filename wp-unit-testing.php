@@ -45,24 +45,26 @@ Author URI: https://benpoulson.me
 	function example_tests() {
 
 		/* Check using WP's version checker, to see if we're up to date */
-		WPUT::test('Core', 'Check WordPress Updates', function(){
+		WPUT::test('Core', 'Check for WordPress Updates', function(){
 			$blog_version = get_bloginfo('version');
 			$response = file_get_contents('http://api.wordpress.org/core/version-check/1.0/?version=' . $blog_version);
 			return WPUT::assertTrue($response == 'latest');
 		});
 
 		/* Do any of our plugins need updating? */
-		WPUT::test('Core', 'Check Plugin Updates', function(){
+		WPUT::test('Core', 'Check for Plugin Updates', function(){
 			$plugin_status = get_site_transient('update_plugins');
 			$update_count = count($plugin_status->response);
-			return WPUT::assertFalse($update_count, $update_count . ' plugin/s to update');
+			$update_string = ($update_count ? $update_count . ' plugin/s to update!' : '' );
+			return WPUT::assertFalse($update_count, $update_string);
 		});
 
 		/* Do any of our themes need updating? */
-		WPUT::test('Core', 'Check Theme Updates', function(){
+		WPUT::test('Core', 'Check for Theme Updates', function(){
 			$theme_status = get_site_transient('update_themes');
 			$update_count = count($theme_status->response);
-			return WPUT::assertFalse($update_count, $update_count . ' theme/s to update');
+			$update_string = ($update_count ? $update_count . ' theme/s to update!' : '' );
+			return WPUT::assertFalse($update_count, $update_string);
 		});
 
 		/* Is the uploads folder writable? */
@@ -73,7 +75,7 @@ Author URI: https://benpoulson.me
 		/* Check to see if search engines are encouraged or discouraged */
 		WPUT::test('Core', 'Website Public', function(){
 			$search = (bool)get_option('blog_public');
-			$search_term = ($search ? 'Encouraged' : 'Discouraged');
+			$search_term = ($search ? 'Encouraged' : 'Discouraged!');
 			return WPUT::assertTrue($search, 'Searching is ' . $search_term);
 		});
 
