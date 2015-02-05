@@ -80,7 +80,7 @@
 			$bad = 0;
 
 			Self::log('?', 'lightblue', 'WP-UT', 'Start', date('h:i:s d/m/Y'));
-			$time = time();
+			$time = round(microtime(true) * 1000);
 
 			foreach(Self::$tests as $namespace => $namespace_tests) {
 
@@ -125,7 +125,7 @@
 
 			}
 
-			Self::log('?', 'lightblue', 'WP-UT', 'Finish', $good . '/' . $total . ' tests passed in ' . (time() - $time) . ' seconds');
+			Self::log('?', 'lightblue', 'WP-UT', 'Finish', $good . '/' . $total . ' tests passed in ' . (round(microtime(true) * 1000) - $time) . ' milliseconds');
 			
 				
 		}
